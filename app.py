@@ -8,13 +8,18 @@ app = Flask(__name__)
 CORS(app)
 
 # Configuração do banco de dados
-# Suporta SQLite (desenvolvimento) e PostgreSQL (produção)
-basedir = os.path.abspath(os.path.dirname(__file__))
-DATABASE_URL = os.environ.get('DATABASE_URL', f'sqlite:///{os.path.join(basedir, "emissoes.db")}')
+# Em produção (Railway), usar PostgreSQL obrigatório
+# Em desenvolvimento local, pode usar SQLite como fallback
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
-# Fix para Railway/Heroku (postgres:// → postgresql://)
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+if DATABASE_URL:
+    # Fix para Railway/Heroku (postgres:// → postgresql://)
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+else:
+    # Fallback apenas para desenvolvimento local - Railway sempre terá DATABASE_URL
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    DATABASE_URL = f'sqlite:///{os.path.join(basedir, "emissoes.db")}'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
