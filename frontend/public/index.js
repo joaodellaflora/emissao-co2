@@ -1,3 +1,8 @@
+// ⚙️ CONFIGURAÇÃO DA API
+// 🔧 URL DO SEU RAILWAY:
+const API_BASE_URL = "https://web-production-922a.up.railway.app";
+// Para desenvolvimento local: "http://localhost:5000"
+
 const root = document.getElementById("root");
 
 root.innerHTML = `
@@ -369,7 +374,7 @@ document.getElementById("form").addEventListener("submit", async (e) => {
   document.getElementById("sucesso").classList.add("hidden");
   
   try {
-    const res = await fetch("http://localhost:5000/api/salvar-dados", {
+    const res = await fetch(`${API_BASE_URL}/api/salvar-dados`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dados),
